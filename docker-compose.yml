@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  product-service:
+    container_name: partapi 
+    build: ./rest
+    volumes:
+      - ./rest:/usr/src/app
+    ports:
+      - 5001:80
+    depends_on:
+      - partmandb
+
+  website:
+    image: php:apache
+    volumes:
+      - ./website:/var/www/html
+    ports:
+      - 5000:80
+    depends_on:
+      - product-service
+
+  partmandb:
+    container_name: partmandb
+    image: postgres
+    restart: always
+    volumes:
+      - ./db/vol:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+        - 5432:5432
+    environment:
+        POSTGRES_PASSWORD: docker
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+        - 8080:8080
+
