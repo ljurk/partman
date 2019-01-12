@@ -1,39 +1,32 @@
 <html>
     <head>
         <title>My Shop</title>
-    <style>
-    table {
-      font-family: arial, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    td, th {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
-    
-    tr:nth-child(even) {
-      background-color: #dddddd;
-    }
-    </style>
+        <style>
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+        </style>
     </head>
-
     <body>
         <h1>Welcome to my shop</h1>
         <ul>
             <?php
-                function printHeader()
-                {
-                    $table ='<tr><td>id</td><td>name</td><td>category</td><td>friendlyName</td></tr>';
+                function printHeader() {
+                    $table ='<tr><td>id</td><td>categoryId</td><td>name</td><td>friendlyName</td></tr>';
                     return $table;
                 }
-                function jsonToTable ($data)
-                {
-//                    if(!is_array($data)) {
-                        $table .= '<tr>';
- //                   }
+                function jsonToTable ($data) {
+                    $table .= '<tr>';
                     foreach ($data as $key => $value) {
                         if (is_object($value) || is_array($value)) {
                             $table .= '</tr>';
@@ -45,21 +38,36 @@
                         }
                     }
                     return $table;
-            }
-            $json = file_get_contents('http://partapi/');
-            $obj = json_decode($json);
+                }
+                function printInputs(){
+                    $output = '<form action="action.php" method="post">
+                            <tr>
+                            <td>
+                            <input type="submit" value="speichern">
+                            </td>
+                            <td>
+                            <input type="text" name="categoryId" id="categoryId">
+                            </td>
+                            <td>
+                            <input type="text" name="name" id="name">
+                            </td>
+                            <td>
+                            <input type="text" name="friendlyName" id="friendlyName">
+                            </td>
+                            </tr>
+                        </form>';
+                    return $output;
+                }
+                $json = file_get_contents('http://partapi/');
+                $obj = json_decode($json);
 
 
-            $parts = $obj->parts;
-            echo '<table class="json-table" width="100%">';
-            echo printHeader();
-            echo jsonToTable($parts);
-            echo '</table>' 
-
-      //      foreach ($parts as $part) {
-      //          echo "<li>$part</li>";
-       //     }
-
+                $parts = $obj->parts;
+                echo '<table class="json-table" width="100%">';
+                echo printHeader();
+                echo jsonToTable($parts);
+                echo printInputs();
+                echo '</table>'
             ?>
         </ul>
     </body>
