@@ -2,35 +2,51 @@
 
 # Import framework
 from flask import Flask, jsonify
-from flask_restful import Resource, Api
-import psycopg2 
+from flask_restful import Resource, Api, reqparse
+import psycopg2
 
 # Instantiate the app
 app = Flask(__name__)
 api = Api(app)
+app.config['JSON_SORT_KEYS'] = False
+
+#initiate parser for put
+parser = reqparse.RequestParser()
+parser.add_argument('categoryId')
+parser.add_argument('name')
+parser.add_argument('friendlyName')
 
 #db
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
-#%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
-
-print( "dbname=partman user=partman host=partmandb password=docker")
 con = psycopg2.connect( "dbname='partman' user='partman' host='partmandb' password='docker'")
 cur = con.cursor()
 output =""
+
 class Product(Resource):
-    def getParts(self): 
+    def getParts(self):
         cur.execute("SELECT * FROM parts;")
         output = cur.fetchone()
-        print(output[0]) 
+        print(output[0])
         parts=[]
         while output != None:
             part = {'id': output[0],'categoryId': output[1], 'name': output[2], 'friendlyName': output[3] }
             parts.append(part)
             output = cur.fetchone()
-        return parts 
-    
+        return parts
+
     def get(self):
         return(jsonify({'parts':self.getParts()}))
+
+    def put(self):
+        args = parser.parse_args()
+        sqlCommand = "INSERT INTO parts(categoryId,name,friendlyName) VALUES(" + args['categoryId'] + ",'" + args['name'] + "','" + args['friendlyName']+"')"
+
+        cur.execute(sqlCommand)
+        con.commit()
+        #read new entry
+        cur.execute("SELECT * FROM parts ORDER BY id DESC LIMIT 1;")
+        output = cur.fetchone()
+        part = {'id': output[0],'categoryId': output[1], 'name': output[2], 'friendlyName': output[3] }
+        return part, 201
 
 # Create routes
 api.add_resource(Product, '/')
