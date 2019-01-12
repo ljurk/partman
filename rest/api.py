@@ -28,7 +28,11 @@ output =""
 Index.cursor = cur
 Index.host = host
 Parts.cursor = cur
+Parts.parser = parser
+Parts.connection = con
 Categories.cursor = cur
+Categories.parser = parser
+Categories.connection = con
 
 # Create routes
 api.add_resource(Index, '/')

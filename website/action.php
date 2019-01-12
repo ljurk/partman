@@ -1,11 +1,22 @@
 <?php
-$service_url = 'http://partapi/parts';
-$curl = curl_init($service_url);
-$curl_post_data = array(
+$referer = strtok($_SERVER['HTTP_REFERER'], '?');
+echo $referer;
+if($referer == "http://localhost:5000/categories.php"){
+    $service_url = 'http://partapi/categories';
+    $curl_post_data = array(
+        'name' => $_POST['name']
+);
+}else{
+    $service_url = 'http://partapi/parts';
+    $curl_post_data = array(
         'categoryId' => (int)$_POST['categoryId'],
         'name' => $_POST['name'],
         'friendlyName' => $_POST['friendlyName']
 );
+}
+echo $_POST['categoryId'];
+echo $service_url;
+$curl = curl_init($service_url);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
 curl_setopt($curl, CURLOPT_POSTFIELDS, $curl_post_data);
@@ -22,6 +33,6 @@ if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') 
 }
 echo 'response ok!';
 var_export($decoded->response);
-header('Location: /');
 ?>
-<meta http-equiv="refresh" content="0; URL='http://localhost:5000'" />
+
+<meta http-equiv="refresh" content="0; URL='<?php echo $referer . '?status=success';?>'" />

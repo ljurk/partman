@@ -4,8 +4,10 @@ from flask_restful import Resource, Api, reqparse
 
 class Parts(Resource):
     cursor = None
+    parser = None
+    connection = None
     def getParts(self):
-        self.cursor.execute("SELECT * FROM parts;")
+        self.cursor.execute("SELECT p.id, c.name, p.name, p.friendlyName FROM parts as p, categories as c WHERE c.id = p.categoryId;")
         output = self.cursor.fetchone()
         print(output[0])
         parts=[]
@@ -19,11 +21,11 @@ class Parts(Resource):
         return(jsonify({'parts':self.getParts()}))
 
     def put(self):
-        args = parser.parse_args()
+        args = self.parser.parse_args()
         sqlCommand = "INSERT INTO parts(categoryId,name,friendlyName) VALUES(" + args['categoryId'] + ",'" + args['name'] + "','" + args['friendlyName']+"')"
 
         self.cursor.execute(sqlCommand)
-        con.commit()
+        self.connection.commit()
         #read new entry
         self.cursor.execute("SELECT * FROM parts ORDER BY id DESC LIMIT 1;")
         output = self.cursor.fetchone()

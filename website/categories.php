@@ -18,31 +18,14 @@
         </style>
     </head>
     <body>
-        <h1>Welcome to the future</h1>
-        <a href="categories.php">categories</a>
+        <h1>Categories</h1>
+        <a href="index.php">parts</a> 
         <ul>
             <?php
                 function printHeader() {
-                    $table ='<tr>
-                        <td>id</td>
-                        <td>categoryId</td>
-                        <td>name</td>
-                        <td>friendlyName</td>
-                        </tr>';
+                    $table ='<tr><td>id</td><td>name</td></tr>';
                     return $table;
                 }
-                function jsonToSelect ($data) {
-                    foreach ($data as $key => $value) {
-                        if (is_object($value) || is_array($value)) {
-                            //$outputSelect .= jsonToSelect($value);
-                            $outputSelect .= '<option value='.$key.' >' . $value->name . '</option>';
-                        } else {
-                            $outputSelect .= '<option value='.$key.'>' . $value . '</option>';
-                        }
-                    }
-                    return $outputSelect;
-                }
-
                 function jsonToTable ($data) {
                     $table .= '<tr>';
                     foreach ($data as $key => $value) {
@@ -57,44 +40,32 @@
                     }
                     return $table;
                 }
-                function printInputs($categories){
+                function printInputs(){
                     $output = '<form action="action.php" method="post">
                             <tr>
                             <td>
                             <input type="submit" value="speichern">
                             </td>
-                            <td>';
-                    $output .= '<select name="categoryId" id="categoryId" size="';
-                    //$output .= (count($categories)) . '" >';
-                    $output .= '1">';
-                    $output .= jsonToSelect($categories);
-                    $output .= '</select>';
-                    $output .= '</td>
                             <td>
-                            <input type="text" name="name" id="name">
-                            </td>
-                            <td>
-                            <input type="text" name="friendlyName" id="friendlyName">';
+                            <input type="text" name="name" id="name">';
 
                     if($_GET['status'] == 'success'){
                        $output .= '<font color="green" size="5"><b>success</b></font>';
                     }
-                    $output .= '</td>
+                            $outpu .='</td>
                             </tr>
                         </form>';
                     return $output;
                 }
-                $json = file_get_contents('http://partapi/parts');
-                $obj = json_decode($json);
                 $json = file_get_contents('http://partapi/categories');
-                $categories = json_decode($json);
+                $obj = json_decode($json);
 
 
-                $parts = $obj->parts;
+                $parts = $obj->categories;
                 echo '<table class="json-table" width="100%">';
                 echo printHeader();
                 echo jsonToTable($parts);
-                echo printInputs($categories->categories);
+                echo printInputs();
                 echo '</table>'
             ?>
         </ul>
