@@ -6,14 +6,16 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     CREATE DATABASE partman;
     GRANT ALL PRIVILEGES ON DATABASE partman TO partman;
     \connect partman
-    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO partman;    
+    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO partman;
 EOSQL
 
 
 psql -v ON_ERROR_STOP=1 --username "partman" --dbname "partman" <<-EOSQL
-    CREATE TABLE parts (id integer PRIMARY KEY, categoryId integer,name varchar, friendlyName varchar);
-    CREATE TABLE categories (id integer PRIMARY KEY, name varchar);
-    CREATE TABLE categories (id integer PRIMARY KEY, name varchar);
+    CREATE TABLE parts (id SERIAL PRIMARY KEY, categoryId integer,name varchar, friendlyName varchar);
+    CREATE TABLE categories (id SERIAL PRIMARY KEY, name varchar);
+    CREATE TABLE suppliers(id SERIAL PRIMARY KEY, name varchar);
+    CREATE TABLE partIdsFromSuppliers(partId integer,supplierId integer, supplierPartId integer);
+    CREATE TABLE amounts(partId integer, amount integer);
 
-    INSERT INTO parts(id,categoryId,name)VALUES(1,2,'test');
+    INSERT INTO parts(categoryId,name)VALUES(2,'test');
 EOSQL
