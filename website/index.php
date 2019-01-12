@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>My Shop</title>
+        <title>partman</title>
         <style>
             table {
                 font-family: arial, sans-serif;
@@ -18,7 +18,7 @@
         </style>
     </head>
     <body>
-        <h1>Welcome to my shop</h1>
+        <h1>Welcome to the future</h1>
         <ul>
             <?php
                 function printHeader() {
@@ -58,7 +58,7 @@
                         </form>';
                     return $output;
                 }
-                $json = file_get_contents('http://partapi/');
+                $json = file_get_contents('http://partapi/parts');
                 $obj = json_decode($json);
 
 

@@ -1,5 +1,5 @@
 <?php
-$service_url = 'http://partapi/';
+$service_url = 'http://partapi/parts';
 $curl = curl_init($service_url);
 $curl_post_data = array(
         'categoryId' => (int)$_POST['categoryId'],
