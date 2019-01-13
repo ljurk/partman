@@ -22,7 +22,8 @@ class Parts(Resource):
 
     def put(self):
         args = self.parser.parse_args()
-        sqlCommand = "INSERT INTO parts(categoryId,name,friendlyName) VALUES(" + args['categoryId'] + ",'" + args['name'] + "','" + args['friendlyName']+"')"
+        cat = int(args['categoryId']) + 1;
+        sqlCommand = "INSERT INTO parts(categoryId,name,friendlyName) VALUES(" + str(cat) + ",'" + args['name'] + "','" + args['friendlyName']+"')"
 
         self.cursor.execute(sqlCommand)
         self.connection.commit()

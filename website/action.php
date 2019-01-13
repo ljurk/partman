@@ -6,6 +6,7 @@ if($referer == "http://localhost:5000/categories.php"){
     $curl_post_data = array(
         'name' => $_POST['name']
 );
+    echo $_POST['name'];
 }else{
     $service_url = 'http://partapi/parts';
     $curl_post_data = array(
@@ -13,8 +14,8 @@ if($referer == "http://localhost:5000/categories.php"){
         'name' => $_POST['name'],
         'friendlyName' => $_POST['friendlyName']
 );
+    echo $_POST['categoryId'];
 }
-echo $_POST['categoryId'];
 echo $service_url;
 $curl = curl_init($service_url);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
