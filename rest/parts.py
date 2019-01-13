@@ -23,7 +23,7 @@ class Parts(Resource):
 
     def put(self):
         args = self.parser.parse_args()
-        cat = int(args['categoryId']) + 1;
+        cat = int(args['categoryId']) ;
         sqlCommand = "INSERT INTO parts(categoryId,name,friendlyName) VALUES(" + str(cat) + ",'" + args['name'] + "','" + args['friendlyName']+"')"
 
         self.cursor.execute(sqlCommand)

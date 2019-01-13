@@ -36,9 +36,8 @@
                     foreach ($data as $key => $value) {
                         if (is_object($value) || is_array($value)) {
                             //$outputSelect .= jsonToSelect($value);
-                            $outputSelect .= '<option value='.$key.' >' . $value->name . '</option>';
-                        } else {
-                            $outputSelect .= '<option value='.$key.'>' . $value . '</option>';
+                            $key = $key + 1;
+                            $outputSelect .= '<option value='. $key .' >' . $value->name . '</option>';
                         }
                     }
                     return $outputSelect;
