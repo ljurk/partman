@@ -7,12 +7,13 @@ class Parts(Resource):
     parser = None
     connection = None
     def getParts(self):
-        self.cursor.execute("SELECT p.id, c.name, p.name, p.friendlyName FROM parts as p, categories as c WHERE c.id = p.categoryId;")
+        sql ='SELECT p.id,  c.name,p.name, p.friendlyName, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id;'
+
+        self.cursor.execute(sql)
         output = self.cursor.fetchone()
-        print(output[0])
         parts=[]
         while output != None:
-            part = {'id': output[0],'categoryId': output[1], 'name': output[2], 'friendlyName': output[3] }
+            part = {'id': output[0],'category': output[1], 'name': output[2], 'friendlyName': output[3], 'amount': output[4] }
             parts.append(part)
             output = self.cursor.fetchone()
         return parts

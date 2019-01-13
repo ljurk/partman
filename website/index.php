@@ -25,9 +25,10 @@
                 function printHeader() {
                     $table ='<tr>
                         <td>id</td>
-                        <td>categoryId</td>
+                        <td>category</td>
                         <td>name</td>
                         <td>friendlyName</td>
+                        <td>amount</td>
                         </tr>';
                     return $table;
                 }
