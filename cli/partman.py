@@ -46,6 +46,17 @@ def add(args):
                 r = requests.put(host + '/parts', data = {'name':l['name'], 'categoryId': l['categoryId'], 'friendlyName': l['friendlyName']})
                 print(r.text)
 
+def export(args):
+    r = requests.get(host + '/' + args.path)
+    toCsv = r.json()
+    toCsv = toCsv[args.path]
+    keys = toCsv[0].keys()
+    with open(args.file, 'w') as f:
+        f = csv.DictWriter(f, keys, delimiter=';')
+        f.writeheader()
+        for row in toCsv:
+            f.writerow(row)
+
 def createParser():
     """Create argparse object"""
 
@@ -62,7 +73,7 @@ def createParser():
     show_parser = subparsers.add_parser('show', help="show the contents of an entry")
     show_parser.add_argument('path', metavar='PATH', type=str, help='value to add')
     show_parser.set_defaults(func=show)
-    
+
     # process args for `add` command
     addParser = subparsers.add_parser('add', help="show the contents of an entry")
     addParser.add_argument('path', metavar='PATH', type=str, help='value to add')
@@ -72,9 +83,15 @@ def createParser():
     addParser.add_argument('--csv', metavar='CSV', type=str, default=None, help="friendlyName")
     addParser.set_defaults(func=add)
 
+    # process args for `export` command
+    exportParser = subparsers.add_parser('export', help="show the contents of an entry")
+    exportParser.add_argument('path', metavar='PATH', type=str, help='value to add')
+    exportParser.add_argument('file', metavar='FILE', type=str, help='outputfile')
+    exportParser.set_defaults(func=export)
+
     # optional arguments
     parser.add_argument('--debug', action='store_true', default=False, help="enable debug messages")
-    
+
     return parser
 
 def main():
