@@ -1,23 +1,19 @@
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse
+from sql import Sql
+
+sql = Sql()
 
 class Categories(Resource):
     cursor = None
     parser = None
     connection = None
-    def getCategories(self):
-        self.cursor.execute("SELECT * FROM categories;")
-        output = self.cursor.fetchone()
-        print(output[0])
-        cats=[]
-        while output != None:
-            cat = {'id': output[0],'name': output[1] }
-            cats.append(cat)
-            output = self.cursor.fetchone()
-        return cats
+    def __init__(self):
+        sql.cursor = self.cursor
+        sql.connection = self.connection
 
     def get(self):
-        return(jsonify({'categories':self.getCategories()}))
+        return(jsonify({'categories':sql.getObjects('categories',0)}))
 
     def put(self):
         args = self.parser.parse_args()
