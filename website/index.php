@@ -58,7 +58,11 @@
                             $table .= jsonToTable($value);
                         } else {
                             $table .= '<td>';
-                            $table .= $value;
+                            if($key=='id'){
+                                $table .= '<form action="delete.php" method="post"><button type="submit" value="'.$value.'" name="id">X</button>'.$value.'</form>';
+                            } else {
+                                $table .= $value;
+                            }
                             $table .= '</td>';
                         }
                     }
