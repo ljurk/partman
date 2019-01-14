@@ -7,6 +7,10 @@ printNav();
 <ul>
 
 <?php
+$url = 'http://partapi/parts';
+$user = 'user';
+$pw = 'password';
+
 function printInputs($categories) {
     $output = '<form action="action.php" method="post">
         <tr>
@@ -34,7 +38,13 @@ function printInputs($categories) {
         </form>';
     return $output;
 }
-$json = file_get_contents('http://partapi/parts');
+$context = stream_context_create(array (
+    'http' => array (
+        'header' => 'Authorization: Basic ' . base64_encode("$user:$pw")
+    )
+));
+//$json = file_get_contents($url,false,$context);
+$json = file_get_contents($url);
 $obj = json_decode($json);
 $json = file_get_contents('http://partapi/categories');
 $categories = json_decode($json);
