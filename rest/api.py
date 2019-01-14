@@ -16,6 +16,8 @@ host = 'http://localhost:5001/'
 
 #initiate parser for put
 parser = reqparse.RequestParser()
+parser.add_argument('id', type=int, store_missing=False)
+#parser.add_argument('id', type=int, default=1, required=False,store_missing=False)
 parser.add_argument('categoryId')
 parser.add_argument('name')
 parser.add_argument('friendlyName')

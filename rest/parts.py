@@ -6,20 +6,32 @@ class Parts(Resource):
     cursor = None
     parser = None
     connection = None
-    def getParts(self):
-        sql ='SELECT p.id,  c.name,p.name, p.friendlyName, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id;'
 
-        self.cursor.execute(sql)
+    def getPart(self,id):
+        if id == 0:
+            sqlCommand ='SELECT p.id,  c.name,p.name, p.friendlyName, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id;'
+        else:
+            sqlCommand ='SELECT p.id,  c.name,p.name, p.friendlyName, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId WHERE p.id = ' + str(id) + 'ORDER BY p.id;'
+
+        self.cursor.execute(sqlCommand)
         output = self.cursor.fetchone()
         parts=[]
         while output != None:
-            part = {'id': output[0],'category': output[1], 'name': output[2], 'friendlyName': output[3], 'amount': output[4] }
+            part = {'id': output[0],
+                    'category': output[1],
+                    'name': output[2],
+                    'friendlyName': output[3],
+                    'amount': output[4] }
             parts.append(part)
             output = self.cursor.fetchone()
-        return parts
 
+        return parts
     def get(self):
-        return(jsonify({'parts':self.getParts()}))
+        args = self.parser.parse_args()
+        if 'id' in args :
+            return(jsonify({'part':self.getPart(args['id'])}))
+        else:
+            return(jsonify({'parts':self.getPart(0)}))
 
     def put(self):
         args = self.parser.parse_args()
@@ -33,3 +45,10 @@ class Parts(Resource):
         output = self.cursor.fetchone()
         part = {'id': output[0],'categoryId': output[1], 'name': output[2], 'friendlyName': output[3] }
         return part, 201
+
+    def delete(self):
+        args = self.parser.parse_args()
+        sqlCommand = "DELETE FROM parts WHERE id = " + str(args['id']) + ";"
+        self.cursor.execute(sqlCommand)
+        return 200
+
