@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>partman</title>
-        <style>
+        <!--<style>
             table {
                 font-family: arial, sans-serif;
                 border-collapse: collapse;
@@ -15,11 +15,18 @@
             tr:nth-child(even) {
                 background-color: #dddddd;
             }
-        </style>
+        </style>-->
+		<link rel="stylesheet" href="style.css">
     </head>
     <body>
         <h1>Welcome to the future</h1>
-        <a href="categories.php">categories</a>
+        <nav id="TOC">
+			<ul>
+				<li>
+					<a href="categories.php">categories</a>
+				</li>
+			</ul>
+		</nav>
         <ul>
             <?php
                 function printHeader() {
