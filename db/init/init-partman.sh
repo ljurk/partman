@@ -15,7 +15,7 @@ psql -v ON_ERROR_STOP=1 --username "partman" --dbname "partman" <<-EOSQL
     CREATE TABLE categories (id SERIAL PRIMARY KEY, name varchar);
     CREATE TABLE suppliers(id SERIAL PRIMARY KEY, name varchar);
     CREATE TABLE partIdsFromSuppliers(partId integer,supplierId integer, supplierPartId integer);
-    CREATE TABLE amounts(partId integer, amount integer);
+    CREATE TABLE amounts(partId integer PRIMARY KEY, amount integer);
 
     INSERT INTO parts(categoryId,name)VALUES(1,'10k');
     INSERT INTO categories(id,name)VALUES(1,'resistor');
