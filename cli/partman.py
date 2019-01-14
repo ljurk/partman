@@ -43,7 +43,7 @@ def add(args):
                 for row in rows:
                     list.append(row)
             for l in list:
-                r = requests.put(host + '/parts', data = {'name':l['name'], 'categoryId': l['categoryId'], 'friendlyName': l['friendlyName']})
+                r = requests.put(host + '/parts', data = {'name':l['name'], 'categoryId': l['categoryId'], 'friendlyName': l['friendlyName'], 'amount': l['amount']})
                 print(r.text)
 
 def export(args):
