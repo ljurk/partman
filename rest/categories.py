@@ -26,3 +26,9 @@ class Categories(Resource):
         output = self.cursor.fetchone()
         part = {'id': output[0],'name': output[1]}
         return part, 201
+
+    def delete(self):
+        args = self.parser.parse_args()
+        sqlCommand = "DELETE FROM categories WHERE id = " + str(args['id']) + ";"
+        self.cursor.execute(sqlCommand)
+        return 200

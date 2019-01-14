@@ -35,14 +35,15 @@ function printSuccess() {
 }
 
 function jsonToTableHeader ($data) {
-    $outputSelect = '<tr>';
-    $row = $data[0];
-    foreach($row as $key => $val) {
-        echo '<td>';
-        echo $key ;
-        echo '</td>';
+    if(sizeof($data)!=0){
+        $outputSelect = '<tr>';
+        $row = $data[0];
+        foreach($row as $key => $val) {
+            echo '<td>';
+            echo $key ;
+            echo '</td>';
+        }
     }
-
     $outputSelect .= '</tr>';
     return $outputSelect;
 }
