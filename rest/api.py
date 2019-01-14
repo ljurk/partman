@@ -21,6 +21,7 @@ parser.add_argument('id', type=int, store_missing=False)
 parser.add_argument('categoryId')
 parser.add_argument('name')
 parser.add_argument('friendlyName')
+parser.add_argument('amount', type=int )
 
 #db
 con = psycopg2.connect( "dbname='partman' user='partman' host='partmandb' password='docker'")

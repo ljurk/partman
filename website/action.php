@@ -12,7 +12,8 @@ if($referer == "http://localhost:5000/categories.php"){
     $curl_post_data = array(
         'categoryId' => (int)$_POST['categoryId'],
         'name' => $_POST['name'],
-        'friendlyName' => $_POST['friendlyName']
+        'friendlyName' => $_POST['friendlyName'],
+        'amount' => (int)$_POST['amount']
 );
     echo $_POST['categoryId'];
 }

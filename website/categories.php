@@ -21,12 +21,22 @@
     <body>
         <h1>Categories</h1>
         <nav id="TOC">
-			<ul>
-				<li>
-					<a href="index.php">parts</a>
-				</li>
-			</ul>
-		</nav>
+            <ul>
+	        <li>
+	            <a href="index.php">parts</a>
+		</li>
+                <li>
+                    <?php
+                        if($_GET['status'] == 'success'){
+                            $uri = explode('?', $_SERVER['REQUEST_URI'], 2);
+                            $host = "http://$_SERVER[HTTP_HOST]$uri_paths";
+                            echo '<meta http-equiv="refresh" content="1; URL=' . $host . '"/>';
+                            echo '<a href=""> <font color="#68cc6d" >success</font></a>';
+                        }
+                    ?>
+                <li>
+            </ul>
+	</nav>
         <ul>
             <?php
                 function printHeader() {
@@ -54,12 +64,8 @@
                             <input type="submit" value="speichern">
                             </td>
                             <td>
-                            <input type="text" name="name" id="name">';
-
-                    if($_GET['status'] == 'success'){
-                       $output .= '<font color="green" size="5"><b>success</b></font>';
-                    }
-                            $outpu .='</td>
+                            <input type="text" name="name" id="name">
+                            </td>
                             </tr>
                         </form>';
                     return $output;

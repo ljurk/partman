@@ -37,6 +37,14 @@ class Parts(Resource):
         args = self.parser.parse_args()
         cat = int(args['categoryId']) ;
         sqlCommand = "INSERT INTO parts(categoryId,name,friendlyName) VALUES(" + str(cat) + ",'" + args['name'] + "','" + args['friendlyName']+"')"
+        self.cursor.execute(sqlCommand)
+        self.connection.commit()
+
+        #get new id
+        self.cursor.execute("SELECT id FROM parts ORDER BY id DESC LIMIT 1;")
+        newestId = self.cursor.fetchone()[0]
+        #add amount
+        sqlCommand = "INSERT INTO amounts(partid,amount) VALUES(" + str(newestId) + ","+str(args['amount']) + ");"
 
         self.cursor.execute(sqlCommand)
         self.connection.commit()
