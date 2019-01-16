@@ -1,4 +1,5 @@
 <?php
+$GLOBALS["subfolder"] = '/pm';
 include('func.php');
 printHeader('Categories');
 printNav();

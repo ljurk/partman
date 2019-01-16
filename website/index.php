@@ -1,4 +1,5 @@
 <?php
+$GLOBALS["subfolder"] = '/pm';
 include('func.php');
 printHeader('Welcome to the future?!?!');
 printNav();
@@ -10,9 +11,8 @@ printNav();
 $url = 'http://partapi/parts';
 $user = 'user';
 $pw = 'password';
-
 function printInputs($categories) {
-    $output = '<form action="action.php" method="post">
+    $output = '<form action="' . $GLOBALS["subfolder"] . '/action.php" method="post">
         <tr>
         <td>
         <input type="submit" value="speichern">

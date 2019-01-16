@@ -1,17 +1,18 @@
 <?php
-    $referer = strtok($_SERVER['HTTP_REFERER'], '?');
-    echo $referer;
-    if($referer == "http://localhost:5000/categories.php"){
-        $service_url = 'http://partapi/categories';
-        $curl_post_data = array(
-            'id' => $_POST['id']
-        );
-        echo $_POST['id'];
+include('func.php');
+$referer = strtok($_SERVER['HTTP_REFERER'], '?');
+echo $referer;
+if(endsWith($referer,"/categories.php") == true){
+    $service_url = 'http://partapi/categories';
+    $curl_post_data = array(
+        'id' => $_POST['id']
+    );
+    echo $_POST['id'];
 }else{
     $service_url = 'http://partapi/parts';
     $curl_post_data = array(
         'id' => $_POST['id']
-);
+    );
     echo $_POST['id'];
 }
 echo $service_url;

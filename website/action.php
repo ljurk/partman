@@ -1,7 +1,8 @@
 <?php
+include('func.php');
 $referer = strtok($_SERVER['HTTP_REFERER'], '?');
 echo $referer;
-if($referer == "http://localhost:5000/categories.php"){
+if(endsWith($referer,"/categories.php") == true){
     $service_url = 'http://partapi/categories';
     $curl_post_data = array(
         'name' => $_POST['name']

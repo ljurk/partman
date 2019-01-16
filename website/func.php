@@ -1,4 +1,13 @@
 <?php
+function endsWith($string, $endString)
+{
+        $len = strlen($endString);
+            if ($len == 0) {
+                        return true;
+                            }
+    return (substr($string, -$len) === $endString);
+}
+
 function printHeader($h1) {
     echo '<html>
         <head>
@@ -13,10 +22,10 @@ function printNav() {
     echo '<nav id="TOC">
         <ul>
         <li>
-        <a href="index.php">parts</a>
+        <a href="'.$GLOBALS["subfolder"].'/">parts</a>
         </li>
         <li>
-        <a href="categories.php">categories</a>
+        <a href="'.$GLOBALS["subfolder"].'/categories.php">categories</a>
         </li>
         <li>';
     if($_GET['status'] == 'success') {
@@ -29,7 +38,7 @@ function printNav() {
 
 function printSuccess() {
     $uri = explode('?', $_SERVER['REQUEST_URI'], 2);
-    $host = "http://$_SERVER[HTTP_HOST]$uri[0]";
+    $host = "http://$_SERVER[HTTP_HOST]".$GLOBALS['subfolder'].$uri[0];
     echo '<meta http-equiv="refresh" content="1; URL=' . $host . '"/>';
     echo '<a href=""> <font color="#68cc6d" >success</font></a>';
 }
@@ -68,7 +77,7 @@ function jsonToTable ($data) {
         } else {
             $table .= '<td>';
             if($key=='id') {
-                $table .= '<form action="delete.php" method="post"><button type="submit" value="'.$value.'" name="id">X</button>'.$value.'</form>';
+                $table .= '<form action="' . $GLOBALS["subfolder"] . '/delete.php" method="post"><button type="submit" value="'.$value.'" name="id">X</button>'.$value.'</form>';
             } else {
                 $table .= $value;
             }
