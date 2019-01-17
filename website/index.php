@@ -1,4 +1,5 @@
 <?php
+$GLOBALS["contentid"] = 1;
 $GLOBALS["subfolder"] = '/pm';
 include('func.php');
 printHeader('Welcome to the future?!?!');

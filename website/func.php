@@ -12,6 +12,8 @@ function printHeader($h1) {
     echo '<html>
         <head>
         <title>partman</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="scripts/jq.js"></script>
         <link rel="stylesheet" href="style.css">
         </head>
         <body>
@@ -81,6 +83,15 @@ function jsonToTable ($data) {
             $table .= '<td>';
             if($key=='id') {
                 $table .= '<form action="' . $GLOBALS["subfolder"] . '/delete.php" method="post"><button type="submit" value="'.$value.'" name="id">X</button>'.$value.'</form>';
+
+            }elseif($key=='amount') {
+                $table .= '<form action="' . $GLOBALS["subfolder"] . '/update.php" method="post"><input type="number" name="amount" id="amount" min="0" value="'.$value.'"><button type ="submit" />change</form>';
+
+            }elseif($key == 'name' || $key == 'description'){
+                $table .= '<span id="'.$GLOBALS['contentid'].'"contenteditable="true">'
+                    .$value.
+                    '</span>';
+                $GLOBALS['contentid'] =$GLOBALS['contentid'] + 1;
             } else {
                 $table .= $value;
             }
