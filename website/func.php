@@ -27,6 +27,9 @@ function printNav() {
         <li>
         <a href="'.$GLOBALS["subfolder"].'/categories.php">categories</a>
         </li>
+        <li>
+        <a href="'.$GLOBALS["subfolder"].'/api">api</a>
+        </li>
         <li>';
     if($_GET['status'] == 'success') {
         printSuccess();
