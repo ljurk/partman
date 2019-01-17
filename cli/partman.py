@@ -33,9 +33,6 @@ def add(args):
         if args.name != None:
             r = requests.put(host + '/categories', data = {'name':args.name})
             print(r.text)
-    elif args.path == 'part':
-        if args.name != None and args.categoryId != None and args.friendlyName != None:
-            r = requests.put(host + '/parts', data = {'name':args.name, 'categoryId': args.categoryId, 'friendlyName': args.friendlyName})
         elif args.csv != None:
             list = []
             with open(args.csv,'r') as f:
@@ -43,7 +40,19 @@ def add(args):
                 for row in rows:
                     list.append(row)
             for l in list:
-                r = requests.put(host + '/parts', data = {'name':l['name'], 'categoryId': l['categoryId'], 'friendlyName': l['friendlyName'], 'amount': l['amount']})
+                r = requests.put(host + '/categories', data = {'name':l['name']})
+                print(r.text)
+    elif args.path == 'part':
+        if args.name != None and args.categoryId != None and args.description != None:
+            r = requests.put(host + '/parts', data = {'name':args.name, 'categoryId': args.categoryId, 'description': args.description})
+        elif args.csv != None:
+            list = []
+            with open(args.csv,'r') as f:
+                rows = csv.DictReader(f, delimiter=';')
+                for row in rows:
+                    list.append(row)
+            for l in list:
+                r = requests.put(host + '/parts', data = {'name':l['name'], 'categoryId': l['categoryId'], 'description': l['description'], 'amount': l['amount']})
                 print(r.text)
 
 def export(args):
@@ -79,8 +88,8 @@ def createParser():
     addParser.add_argument('path', metavar='PATH', type=str, help='value to add')
     addParser.add_argument('--name', metavar='NAME', type=str, default=None, help="name of part")
     addParser.add_argument('--categoryId', metavar='CATEGORYID', type=int, default=None, help="id of category")
-    addParser.add_argument('--friendlyName', metavar='FRIENDLYNAME', type=str, default=None, help="friendlyName")
-    addParser.add_argument('--csv', metavar='CSV', type=str, default=None, help="friendlyName")
+    addParser.add_argument('--description', metavar='DESCRIPTION', type=str, default=None, help="description")
+    addParser.add_argument('--csv', metavar='CSV', type=str, default=None, help="description")
     addParser.set_defaults(func=add)
 
     # process args for `export` command
