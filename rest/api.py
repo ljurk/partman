@@ -12,7 +12,8 @@ from categories import Categories
 app = Flask(__name__)
 api = Api(app)
 app.config['JSON_SORT_KEYS'] = False
-host = 'http://localhost:5001/'
+#host = 'http://localhost:5001/'
+host = 'https://303.ddns.net/pm/api/'
 
 #initiate parser for put
 parser = reqparse.RequestParser()
@@ -20,7 +21,7 @@ parser.add_argument('id', type=int, store_missing=False)
 #parser.add_argument('id', type=int, default=1, required=False,store_missing=False)
 parser.add_argument('categoryId')
 parser.add_argument('name')
-parser.add_argument('friendlyName')
+parser.add_argument('description')
 parser.add_argument('amount', type=int )
 
 #db

@@ -4,9 +4,9 @@ class Sql():
     def getObjects(self,type, id):
         if type == 'parts':
             if id == 0:
-                sqlCommand ='SELECT p.id,  c.name as category, p.name,  p.friendlyName, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id DESC;'
+                sqlCommand ='SELECT p.id,  c.name as category, p.name,  p.description, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id DESC;'
             else:
-                sqlCommand ='SELECT p.id,  c.name as category,p.name, p.friendlyName, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId WHERE p.id = ' + str(id) + 'ORDER BY p.id;'
+                sqlCommand ='SELECT p.id,  c.name as category,p.name, p.description, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId WHERE p.id = ' + str(id) + 'ORDER BY p.id;'
         elif type == 'categories':
             sqlCommand= 'SELECT * FROM categories;'
         

@@ -23,7 +23,7 @@ class Parts(Resource):
     def put(self):
         args = self.parser.parse_args()
         cat = int(args['categoryId']) ;
-        sqlCommand = "INSERT INTO parts(categoryId,name,friendlyName) VALUES(" + str(cat) + ",'" + args['name'] + "','" + args['friendlyName']+"')"
+        sqlCommand = "INSERT INTO parts(categoryId,name,description) VALUES(" + str(cat) + ",'" + args['name'] + "','" + args['description']+"')"
         self.cursor.execute(sqlCommand)
         self.connection.commit()
 
@@ -36,13 +36,13 @@ class Parts(Resource):
         self.cursor.execute(sqlCommand)
         self.connection.commit()
         #read new entry
-        sqlCommand ='SELECT p.id, c.name,p.name, p.friendlyName, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id DESC LIMIT 1;'
+        sqlCommand ='SELECT p.id, c.name,p.name, p.description, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id DESC LIMIT 1;'
         self.cursor.execute(sqlCommand)
         output = self.cursor.fetchone()
         part = {'id': output[0],
                 'categoryId': output[1],
                 'name': output[2],
-                'friendlyName': output[3],
+                'description': output[3],
                 'amount': output[4]
                 }
         return part, 201

@@ -11,7 +11,7 @@ EOSQL
 
 
 psql -v ON_ERROR_STOP=1 --username "partman" --dbname "partman" <<-EOSQL
-    CREATE TABLE parts (id SERIAL PRIMARY KEY, categoryId integer,name varchar, friendlyName varchar);
+    CREATE TABLE parts (id SERIAL PRIMARY KEY, categoryId integer,name varchar, description varchar);
     CREATE TABLE categories (id SERIAL PRIMARY KEY, name varchar);
     CREATE TABLE suppliers(id SERIAL PRIMARY KEY, name varchar);
     CREATE TABLE partIdsFromSuppliers(partId integer,supplierId integer, supplierPartId integer);
