@@ -22,18 +22,34 @@ class Parts(Resource):
 
     def put(self):
         args = self.parser.parse_args()
-        sqlCommand = "INSERT INTO parts(categoryId,name,description) VALUES(" + str(args['categoryId']) + ",'" + args['name'] + "','" + args['description']+"')"
-        self.cursor.execute(sqlCommand)
-        self.connection.commit()
+        if args['name'] != None:
+            sqlCommand = "INSERT INTO parts(name) VALUES('" + args['name'] + "')"
+            #sqlCommand = "INSERT INTO parts(categoryId,name,description) VALUES(" + str(args['categoryId']) + ",'" + args['name'] + "','" + args['description']+"')"
+            self.cursor.execute(sqlCommand)
+            self.connection.commit()
 
-        #get new id
-        self.cursor.execute("SELECT id FROM parts ORDER BY id DESC LIMIT 1;")
-        newestId = self.cursor.fetchone()[0]
-        #add amount
-        sqlCommand = "INSERT INTO amounts(partid,amount) VALUES(" + str(newestId) + ","+str(args['amount']) + ");"
+            #get new id
+            self.cursor.execute("SELECT id FROM parts ORDER BY id DESC LIMIT 1;")
+            newestId = self.cursor.fetchone()[0]
+            #set categoryId if set
+            if args['categoryId'] != None:
+                sqlCommand = "UPDATE parts SET categoryId=" + str(args['categoryId']) + " WHERE id ="+str(newestId)+";"
+                self.cursor.execute(sqlCommand)
+                self.connection.commit()
 
-        self.cursor.execute(sqlCommand)
-        self.connection.commit()
+            #set description if set
+            if args['description'] != None:
+                sqlCommand = "UPDATE parts SET description='" + str(args['description']) + "' WHERE id ="+str(newestId)+";"
+                self.cursor.execute(sqlCommand)
+                self.connection.commit()
+
+            #set amount if set
+            if args['amount'] != None:
+                #add amount
+                sqlCommand = "INSERT INTO amounts(partid,amount) VALUES(" + str(newestId) + ","+str(args['amount']) + ");"
+                self.cursor.execute(sqlCommand)
+                self.connection.commit()
+
         #read new entry
         sqlCommand ='SELECT p.id, c.name,p.name, p.description, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId ORDER BY p.id DESC LIMIT 1;'
         self.cursor.execute(sqlCommand)
@@ -55,8 +71,11 @@ class Parts(Resource):
 
     def patch(self):
         args = self.parser.parse_args()
-        sqlCommand = "UPDATE amounts SET amount=" + str(args['amount']) + " WHERE partid = " + str(args['id']) + ";"
-        self.cursor.execute(sqlCommand)
-        self.connection.commit()
-        return 200
+        if args['amount'] != None:
+            sqlCommand = "UPDATE amounts SET amount=" + str(args['amount']) + " WHERE partid = " + str(args['id']) + ";"
+            self.cursor.execute(sqlCommand)
+            self.connection.commit()
+            return 200
+        else:
+            return "no input",200
 
