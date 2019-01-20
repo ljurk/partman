@@ -9,7 +9,7 @@ printNav();
 
 <?php
 function printInputs() {
-    $output = '<form action="action.php" method="post">
+    $output = '<form action="put.php" method="post">
         <tr>
         <td>
         <input type="submit" value="speichern">

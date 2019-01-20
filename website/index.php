@@ -13,7 +13,7 @@ $url = 'http://partapi/parts';
 $user = 'user';
 $pw = 'password';
 function printInputs($categories) {
-    $output = '<form action="' . $GLOBALS["subfolder"] . '/action.php" method="post">
+    $output = '<form action="' . $GLOBALS["subfolder"] . '/put.php" method="post">
         <tr>
         <td>
         <input type="submit" value="speichern">

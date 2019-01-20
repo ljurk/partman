@@ -22,8 +22,7 @@ class Parts(Resource):
 
     def put(self):
         args = self.parser.parse_args()
-        cat = int(args['categoryId']) ;
-        sqlCommand = "INSERT INTO parts(categoryId,name,description) VALUES(" + str(cat) + ",'" + args['name'] + "','" + args['description']+"')"
+        sqlCommand = "INSERT INTO parts(categoryId,name,description) VALUES(" + str(args['categoryId']) + ",'" + args['name'] + "','" + args['description']+"')"
         self.cursor.execute(sqlCommand)
         self.connection.commit()
 
@@ -51,5 +50,13 @@ class Parts(Resource):
         args = self.parser.parse_args()
         sqlCommand = "DELETE FROM parts WHERE id = " + str(args['id']) + ";"
         self.cursor.execute(sqlCommand)
+        self.connection.commit()
+        return 200
+
+    def patch(self):
+        args = self.parser.parse_args()
+        sqlCommand = "UPDATE amounts SET amount=" + str(args['amount']) + " WHERE partid = " + str(args['id']) + ";"
+        self.cursor.execute(sqlCommand)
+        self.connection.commit()
         return 200
 
