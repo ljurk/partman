@@ -19,11 +19,10 @@ function printInputs($categories) {
         <input type="submit" value="speichern">
         </td>
         <td>';
-    $output .= '<select name="categoryId" id="categoryId" size="';
-    //$output .= (count($categories)) . '" >';
-    $output .= '1">';
+    #$output .= '<select name="categoryId" id="categoryId" size="';
+    #$output .= '1">';
     $output .= jsonToSelect($categories);
-    $output .= '</select>';
+    #$output .= '</select>';
     $output .= '</td>
         <td>
         <input type="text" name="name" id="name">
@@ -53,7 +52,7 @@ $categories = json_decode($json);
 $parts = $obj->parts;
 echo '<table class="json-table" width="100%">';
 echo jsonToTableHeader($parts);
-echo jsonToTable($parts);
+echo jsonToTable($parts, $categories->categories);
 echo printInputs($categories->categories);
 echo '</table>'
 ?>

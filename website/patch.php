@@ -1,5 +1,6 @@
 <?php
 include('func.php');
+echo $_POST['amount'];
 $referer = strtok($_SERVER['HTTP_REFERER'], '?');
 echo $referer;
 if(endsWith($referer,"/categories.php") == true){
@@ -12,7 +13,10 @@ if(endsWith($referer,"/categories.php") == true){
     $service_url = 'http://partapi/parts';
     $curl_post_data = array(
         'id' => (int)$_POST['id'],
-        'amount' => (int)$_POST['amount']
+        'amount' => (int)$_POST['amount'],
+        'description' => $_POST['description'],
+        'name' =>$_POST['name'],
+        'categoryId' => $_POST['categoryId']
 );
 }
 echo $service_url;
@@ -35,4 +39,4 @@ echo 'response ok!';
 var_export($decoded->response);
 ?>
 
-<meta http-equiv="refresh" content="0; URL='<?php echo $referer . '?status=success';?>'" />
+<!--<meta http-equiv="refresh" content="0; URL='<?php echo $referer . '?status=success';?>'" />-->

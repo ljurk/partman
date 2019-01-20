@@ -71,11 +71,41 @@ class Parts(Resource):
 
     def patch(self):
         args = self.parser.parse_args()
-        if args['amount'] != None:
-            sqlCommand = "UPDATE amounts SET amount=" + str(args['amount']) + " WHERE partid = " + str(args['id']) + ";"
+        if args['id'] != None:
+            if args['name'] != None:
+                sqlCommand = "UPDATE parts SET name='" + str(args['name']) + "' WHERE id = " + str(args['id']) + ";"
+                self.cursor.execute(sqlCommand)
+                self.connection.commit()
+            if args['description'] != None:
+                sqlCommand = "UPDATE parts SET description='" + str(args['description']) + "' WHERE id = " + str(args['id']) + ";"
+                self.cursor.execute(sqlCommand)
+                self.connection.commit()
+            if args['categoryId'] != None:
+                sqlCommand = "UPDATE parts SET categoryId=" + str(args['categoryId']) + " WHERE id = " + str(args['id']) + ";"
+                self.cursor.execute(sqlCommand)
+                self.connection.commit()
+            if args['amount'] != None:
+                sqlCommand ="SELECT COUNT(*) FROM amounts WHERE partid="+str(args['id'])+";"
+                self.cursor.execute(sqlCommand)
+                count = self.cursor.fetchone()[0]
+                if count == 0:
+                    sqlCommand = "INSERT INTO amounts(partid,amount) VALUES(" + str(args['id']) + ","+str(args['amount']) + ");"
+                else:
+                    sqlCommand = "UPDATE amounts SET amount=" + str(args['amount']) + " WHERE partid = " + str(args['id']) + ";"
+                self.cursor.execute(sqlCommand)
+                self.connection.commit()
+
+            #read new entry
+            sqlCommand ='SELECT p.id, c.name,p.name, p.description, a.amount FROM parts as p LEFT JOIN amounts as a ON p.id=a.partid LEFT JOIN categories as c ON c.id = p.categoryId WHERE p.id =' + str(args['id']) + ';'
             self.cursor.execute(sqlCommand)
-            self.connection.commit()
-            return 200
+            output = self.cursor.fetchone()
+            part = {'id': output[0],
+                    'categoryId': output[1],
+                    'name': output[2],
+                    'description': output[3],
+                    'amount': output[4]
+                    }
+            return part, 200
         else:
             return "no input",200
 
