@@ -1,5 +1,5 @@
 <?php
-$GLOBALS["subfolder"] = '/pm';
+$GLOBALS["subfolder"] = '';
 include('func.php');
 printHeader('Categories');
 printNav();
@@ -28,7 +28,7 @@ $obj = json_decode($json);
 $categories = $obj->categories;
 echo '<table class="json-table" width="100%">';
 echo jsonToTableHeader($categories);
-echo jsonToTable($categories);
+echo jsonToTable($categories, $categories, 1);
 echo printInputs();
 echo '</table>'
 ?>

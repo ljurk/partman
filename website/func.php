@@ -76,18 +76,17 @@ function jsonToSelect ($data) {
     return $outputSelect;
 }
 
-function jsonToTable ($data, $categories) {
+function jsonToTable ($data, $categories, $type) {
     $table .= '<tr>';
     $actualId = 0;
     foreach ($data as $key => $value) {
         if (is_object($value) || is_array($value)) {
             $table .= '</tr>';
-            $table .= jsonToTable($value, $categories);
+            $table .= jsonToTable($value, $categories, $type);
         } else {
             $table .= '<td>';
             if($key=='id') {
                 $table .= '<form action="' . $GLOBALS["subfolder"] . '/delete.php" method="post"><button type="submit" value="'.$value.'" name="id">X</button>'.$value.'</form>';
-                $table .= '<form action="' . $GLOBALS["subfolder"] . '/patch.php" method="post">';
                 $actualId = $value;
             }elseif($key=='amount') {
                 $table .= #'<form action="' . $GLOBALS["subfolder"] . '/patch.php" method="post">
@@ -96,15 +95,17 @@ function jsonToTable ($data, $categories) {
                     <button type ="submit"/>change
                     </form>';
             }elseif($key == 'category') {
+                if($type == 0){
+                    #call from index.php
+                    $table .= '<form action="' . $GLOBALS["subfolder"] . '/patch.php" method="post">';
+                }
                 $table .= jsonToSelect($categories);
-            #}elseif($key == 'name' || $key == 'description'){
-            #    $table .= '<span id="'.$GLOBALS['contentid'].'"contenteditable="true">'
-            #        .$value.
-            #        '</span>';
-            #    $GLOBALS['contentid'] =$GLOBALS['contentid'] + 1;
             } else {
-                $table .= '<input type="text" name="'.$key.'" id="'.$key.'" value="'.$value.'"/>';
-               # $table .= $value;
+                if($type == 0){
+                    $table .= '<input type="text" name="'.$key.'" id="'.$key.'" value="'.$value.'"/>';
+                }else{
+                    $table .= $value;
+                }
             }
             $table .= '</td>';
         }

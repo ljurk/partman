@@ -39,4 +39,4 @@ echo 'response ok!';
 var_export($decoded->response);
 ?>
 
-<!--<meta http-equiv="refresh" content="0; URL='<?php echo $referer . '?status=success';?>'" />-->
+<meta http-equiv="refresh" content="0; URL='<?php echo $referer . '?status=success';?>'" />

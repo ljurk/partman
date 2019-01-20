@@ -1,6 +1,6 @@
 <?php
 $GLOBALS["contentid"] = 1;
-$GLOBALS["subfolder"] = '/pm';
+$GLOBALS["subfolder"] = '';
 include('func.php');
 printHeader('Welcome to the future?!?!');
 printNav();
@@ -52,7 +52,7 @@ $categories = json_decode($json);
 $parts = $obj->parts;
 echo '<table class="json-table" width="100%">';
 echo jsonToTableHeader($parts);
-echo jsonToTable($parts, $categories->categories);
+echo jsonToTable($parts, $categories->categories, 0);
 echo printInputs($categories->categories);
 echo '</table>'
 ?>
