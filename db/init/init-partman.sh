@@ -18,5 +18,5 @@ psql -v ON_ERROR_STOP=1 --username "partman" --dbname "partman" <<-EOSQL
     CREATE TABLE amounts(partId integer PRIMARY KEY, amount integer);
 
     INSERT INTO parts(categoryId,name)VALUES(1,'10k');
-    INSERT INTO categories(id,name)VALUES(1,'resistor');
+    INSERT INTO categories(name)VALUES('resistor');
 EOSQL
