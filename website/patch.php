@@ -4,13 +4,13 @@ echo $_POST['amount'];
 $referer = strtok($_SERVER['HTTP_REFERER'], '?');
 echo $referer;
 if(endsWith($referer,"/categories.php") == true){
-    $service_url = 'http://partapi/categories';
+    $service_url = 'http://pm-api/categories';
     $curl_post_data = array(
         'name' => $_POST['name']
 );
     echo $_POST['name'];
 }else{
-    $service_url = 'http://partapi/parts';
+    $service_url = 'http://pm-api/parts';
     $curl_post_data = array(
         'id' => (int)$_POST['id'],
         'amount' => (int)$_POST['amount'],

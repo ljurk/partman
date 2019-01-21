@@ -1,27 +1,27 @@
 version: '3'
 
 services:
-  product-service:
-    container_name: partapi 
+  pm-api:
+    container_name: pm-api
     build: ./rest
     volumes:
       - ./rest:/usr/src/app
     ports:
       - 5001:80
     depends_on:
-      - partmandb
+      - pm-db
 
-  website:
+  pm-website:
     image: php:apache
     volumes:
       - ./website:/var/www/html
     ports:
       - 5000:80
     depends_on:
-      - product-service
+      - pm-api
 
-  partmandb:
-    container_name: partmandb
+  pm-db:
+    container_name: pm-db
     image: postgres
     restart: always
     volumes:
@@ -32,7 +32,7 @@ services:
     environment:
         POSTGRES_PASSWORD: docker
 
-  adminer:
+  pm-adminer:
     image: adminer
     restart: always
     ports:

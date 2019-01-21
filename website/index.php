@@ -9,7 +9,7 @@ printNav();
 <ul>
 
 <?php
-$url = 'http://partapi/parts';
+$url = 'http://pm-api/parts';
 $user = 'user';
 $pw = 'password';
 function printInputs($categories) {
@@ -46,7 +46,7 @@ $context = stream_context_create(array (
 //$json = file_get_contents($url,false,$context);
 $json = file_get_contents($url);
 $obj = json_decode($json);
-$json = file_get_contents('http://partapi/categories');
+$json = file_get_contents('http://pm-api/categories');
 $categories = json_decode($json);
 
 $parts = $obj->parts;

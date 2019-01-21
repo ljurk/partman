@@ -25,7 +25,7 @@ parser.add_argument('description')
 parser.add_argument('amount', type=int )
 
 #db
-con = psycopg2.connect( "dbname='partman' user='partman' host='partmandb' password='docker'")
+con = psycopg2.connect( "dbname='partman' user='partman' host='pm-db' password='docker'")
 cur = con.cursor()
 output =""
 

@@ -21,7 +21,7 @@ function printInputs() {
         </form>';
     return $output;
 }
-$json = file_get_contents('http://partapi/categories');
+$json = file_get_contents('http://pm-api/categories');
 $obj = json_decode($json);
 
 
