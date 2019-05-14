@@ -1,68 +1,77 @@
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit
 import requests
 
 host = 'http://localhost:5001/parts'
 class apiGui:
     app = QApplication([])
     mainWindow = QMainWindow()
+    centralWidget = QWidget()
     tabWidget = QTabWidget()
+    debug = QTextEdit()
+    debug.setReadOnly(True)
+    url = QLineEdit(host)
     #output
     oWindow = QWidget()
     oTable = QTableWidget(0, 0)
-    heading = oTable.horizontalHeader()
-    oDebug = QTextEdit()
-    oDebug.setReadOnly(True)
-    oUrl = QLineEdit(host)
+    oLayout = QVBoxLayout()
     #input
     iWindow = QWidget()
     iLayout = QVBoxLayout()
-    iDebug = QTextEdit()
-    iDebug.setReadOnly(True)
     iTable = QTableWidget(0, 0)
     def show(self):
         self.mainWindow.setWindowTitle("MAIN")
 
+        #generate layout of the tabs
         self.showOutput()
         self.showInput()
+        #central
+        hlayout = QHBoxLayout()
+        hlayout.addWidget(QLabel("URL"))
+        hlayout.addWidget(self.url)
 
+        mainLayout = QVBoxLayout()
+        mainLayout.addLayout(hlayout)
+        mainLayout.addWidget(self.tabWidget)
+        mainLayout.addWidget(self.debug)
+        self.centralWidget.setLayout(mainLayout)
+        self.mainWindow.setCentralWidget(self.centralWidget)
+        #add tabs
         self.tabWidget.addTab(self.oWindow, "main")
         self.tabWidget.addTab(self.iWindow, "add")
-        #self.tabWidget.currentChanged.connect(lambda:self.reloadInputs(self.oUrl.text()))
-        self.tabWidget.show()
+        #self.tabWidget.currentChanged.connect(lambda:self.reloadInputs(self.url.text()))
+
+        self.mainWindow.show()
         self.app.exec_()
 
     def showOutput(self):
-        layout = QVBoxLayout()
-        layout.addWidget(QLabel("URL"))
-        layout.addWidget(self.oUrl)
-        layout.addWidget(self.oTable)
-        btnReload = QPushButton('reload')
-        btnReload.clicked.connect(lambda:self.fillTable(self.oUrl.text()))
-        layout.addWidget(btnReload)
-        layout.addWidget(self.oDebug)
+        #add Widgets to layout
+        btnReload = QPushButton('load')
+        btnReload.clicked.connect(lambda:self.fillTable(self.oTable, self.url.text()))
+        self.oLayout.addWidget(btnReload)
+        self.oLayout.addWidget(self.oTable)
+        #set layout
+        self.oWindow.setLayout(self.oLayout)
 
-        self.oWindow.setLayout(layout)
     def showInput(self):
-        self.iLayout.addWidget(QLabel("URL"))
-        addURL = QLineEdit(host)
-        self.iLayout.addWidget(addURL)
+        #add Widgets to layout
+        btnReload = QPushButton('load')
+        btnReload.clicked.connect(lambda:self.fillTable(self.iTable, self.url.text()))
+        self.iLayout.addWidget(btnReload)
         btnSend = QPushButton('send')
         btnSend.clicked.connect(lambda:self.send(addURL.text()))
         self.iLayout.addWidget(btnSend)
-        self.iLayout.addWidget(self.iDebug)
+        self.iLayout.addWidget(self.iTable)
+        #set layout
         self.iWindow.setLayout(self.iLayout)
 
     def log(self, text):
-        self.oDebug.append(text)
-        self.oDebug.show()
-        self.iDebug.append(text)
-        self.iDebug.show()
+        self.debug.append(text)
+        self.debug.show()
 
     def request(self, url):
         data = 0
         try:
-            #data = requests.get(url).json()
             r = requests.get(url)
             r.raise_for_status()
             data = r.json()
@@ -81,10 +90,10 @@ class apiGui:
             layout.itemAt(i).widget().setParent(None)
         return layout
 
-    def fillTable(self, url):
-        self.oTable.setRowCount(0)
-        self.oTable.setColumnCount(0)
-        self.oTable.clear()
+    def fillTable(self, table, url):
+        table.setRowCount(0)
+        table.setColumnCount(0)
+        table.clear()
         print(url)
         data = self.request(url)
         if data != 0:
@@ -94,16 +103,16 @@ class apiGui:
             header = list(list(data.values())[0][0].keys())
             for d in data[key]:
                 col = 0
-                self.oTable.setRowCount(row + 1)
+                table.setRowCount(row + 1)
                 for k in d.keys():
                     if row == 0:
-                        self.oTable.setColumnCount(col + 1)
-                        self.heading.setSectionResizeMode(col, QHeaderView.Stretch)
+                        table.setColumnCount(col + 1)
+                        table.horizontalHeader().setSectionResizeMode(col, QHeaderView.Stretch)
                         # or self.heading.setSectionResizeMode(col, QHeaderView.ResizeToContents)
-                    self.oTable.setItem(row, col, QTableWidgetItem(d[k]))
+                    table.setItem(row, col, QTableWidgetItem(d[k]))
                     col += 1
                 row+=1
-            self.oTable.setHorizontalHeaderLabels(header)
+            table.setHorizontalHeaderLabels(header)
 
 
     def reloadInputs(self, url):
@@ -151,5 +160,5 @@ class apiGui:
 
 if __name__ == '__main__':
     ex = apiGui()
-    ex.fillTable(host)
+    #ex.fillTable(.oTable, host)
     ex.show() 
