@@ -1,8 +1,13 @@
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit
 import requests
 
+DEBUG = False
 host = 'http://localhost:5001/parts'
+SEPERATOR = '##########################################'
+
+#text styles
+bold = 1
 class apiGui:
     app = QApplication([])
     mainWindow = QMainWindow()
@@ -11,14 +16,53 @@ class apiGui:
     debug = QTextEdit()
     debug.setReadOnly(True)
     url = QLineEdit(host)
+    headers = []
     #output
     oWindow = QWidget()
     oTable = QTableWidget(0, 0)
+    #output table is readonly
+    oTable.setEditTriggers(QTableWidget.NoEditTriggers)
+    #no row labels
+    oTable.verticalHeader().setVisible(False)
     oLayout = QVBoxLayout()
     #input
     iWindow = QWidget()
     iLayout = QVBoxLayout()
     iTable = QTableWidget(0, 0)
+    #no row labels
+    iTable.verticalHeader().setVisible(False)
+
+    #utility functions
+    def log(self, text, option = 0):
+        if option == bold:
+            text = '<html><b>' + text + '</b></html>'
+        self.debug.append(text)
+        self.debug.show()
+
+    def request(self, url, inputData = 0):
+        #if there is inputData when its a put, otherwise a get
+        data = 0
+        try:
+            if inputData == 0:
+                r = requests.get(url)
+            else:
+                r = requests.put(url, inputData)
+            r.raise_for_status()
+            if inputData == 0:
+                data = r.json()
+            else:
+                data = r
+        except requests.exceptions.HTTPError as errh:
+            self.log("Http Error:"+str(errh))
+        except requests.exceptions.ConnectionError as errc:
+            self.log("Error Connecting:"+str(errc))
+        except requests.exceptions.Timeout as errt:
+            self.log("Timeout Error:"+str(errt))
+        except requests.exceptions.RequestException as err:
+            self.log("OOps: Something Else"+str(err))
+        return data
+
+    #gui functions
     def show(self):
         self.mainWindow.setWindowTitle("MAIN")
 
@@ -39,15 +83,16 @@ class apiGui:
         #add tabs
         self.tabWidget.addTab(self.oWindow, "main")
         self.tabWidget.addTab(self.iWindow, "add")
-        #self.tabWidget.currentChanged.connect(lambda:self.reloadInputs(self.url.text()))
+        self.tabWidget.currentChanged.connect(lambda:self.reload(self.url.text()))
 
         self.mainWindow.show()
+        self.reload(self.url.text())
         self.app.exec_()
 
     def showOutput(self):
         #add Widgets to layout
         btnReload = QPushButton('load')
-        btnReload.clicked.connect(lambda:self.fillTable(self.oTable, self.url.text()))
+        btnReload.clicked.connect(lambda:self.fillOutputTable(self.oTable, self.url.text()))
         self.oLayout.addWidget(btnReload)
         self.oLayout.addWidget(self.oTable)
         #set layout
@@ -56,41 +101,43 @@ class apiGui:
     def showInput(self):
         #add Widgets to layout
         btnReload = QPushButton('load')
-        btnReload.clicked.connect(lambda:self.fillTable(self.iTable, self.url.text()))
+        btnReload.clicked.connect(lambda:self.fillInputTable(self.iTable, self.url.text()))
         self.iLayout.addWidget(btnReload)
         btnSend = QPushButton('send')
-        btnSend.clicked.connect(lambda:self.send(addURL.text()))
+        btnSend.clicked.connect(lambda:self.send(self.url.text()))
         self.iLayout.addWidget(btnSend)
         self.iLayout.addWidget(self.iTable)
         #set layout
         self.iWindow.setLayout(self.iLayout)
 
-    def log(self, text):
-        self.debug.append(text)
-        self.debug.show()
 
-    def request(self, url):
-        data = 0
-        try:
-            r = requests.get(url)
-            r.raise_for_status()
-            data = r.json()
-        except requests.exceptions.HTTPError as errh:
-            self.log("Http Error:"+str(errh))
-        except requests.exceptions.ConnectionError as errc:
-            self.log("Error Connecting:"+str(errc))
-        except requests.exceptions.Timeout as errt:
-            self.log("Timeout Error:"+str(errt))
-        except requests.exceptions.RequestException as err:
-            self.log("OOps: Something Else"+str(err))
-        return data
+    def reload(self, url):
+        self.fillInputTable(self.iTable, url)
+        self.fillOutputTable(self.oTable, url)
 
-    def clearLayout(self, layout):
-        for i in reversed(range(layout.count())):
-            layout.itemAt(i).widget().setParent(None)
-        return layout
+    def fillInputTable(self, table, url):
+        # creates an table with columns based on the url and an empty row, ready for your inputs
+        table.setRowCount(0)
+        table.setColumnCount(0)
+        table.clear()
+        table.setRowCount(1)
+        data = self.request(url)
+        if data != 0:
+            self.log("request ok")
+            key = list(data.keys())[0]
+            self.headers = list(list(data.values())[0][0].keys())
+            col = 0
+            for i in self.headers:
+                table.setColumnCount(col + 1)
+                table.horizontalHeader().setSectionResizeMode(col, QHeaderView.Stretch)
+                cell = QTableWidgetItem("")
+                #future
+                cell.setCheckState(QtCore.Qt.Checked)
+                table.setItem(0, col, cell)
+                col += 1
+            table.setHorizontalHeaderLabels(self.headers)
 
-    def fillTable(self, table, url):
+    def fillOutputTable(self, table, url):
         table.setRowCount(0)
         table.setColumnCount(0)
         table.clear()
@@ -99,66 +146,47 @@ class apiGui:
         if data != 0:
             self.log("request ok")
             row = 0
+            #get the key of first element because my api returns parts/[list]
             key = list(data.keys())[0]
-            header = list(list(data.values())[0][0].keys())
+            #get an array of the dict headers for naming the columns
+            self.headers = list(list(data.values())[0][0].keys())
             for d in data[key]:
                 col = 0
                 table.setRowCount(row + 1)
                 for k in d.keys():
                     if row == 0:
+                        #only create the columns in first loop
                         table.setColumnCount(col + 1)
                         table.horizontalHeader().setSectionResizeMode(col, QHeaderView.Stretch)
-                        # or self.heading.setSectionResizeMode(col, QHeaderView.ResizeToContents)
-                    table.setItem(row, col, QTableWidgetItem(d[k]))
+                    if DEBUG:
+                        self.log(str(d[k]) + str(type(d[k])))
+                    table.setItem(row, col, QTableWidgetItem(str(d[k])))
                     col += 1
                 row+=1
-            table.setHorizontalHeaderLabels(header)
-
-
-    def reloadInputs(self, url):
-        #self.iLayout = QVBoxLayout()
-        self.iLayout = self.clearLayout(self.iLayout)
-        data = requests.get(url).json()
-        row = 0
-        key = list(data.keys())[0]
-        header = list(list(data.values())[0][0].keys())
-        for t in header:
-            self.iLayout.addWidget(QLabel(t))
-            self.iLayout.addWidget(QLineEdit())
-
-        self.iWindow.setLayout(self.iLayout)
+            table.setHorizontalHeaderLabels(self.headers)
 
     def send(self, url):
-        print(url)
+        self.log(SEPERATOR)
+        self.log(SEPERATOR)
+        self.log("send message:", bold)
 
-    def add(args):
-        if args.path == 'category':
-            if args.name != None:
-                r = requests.put(host + '/categories', data = {'name':args.name})
-                print(r.text)
-            elif args.csv != None:
-                list = []
-                with open(args.csv,'r') as f:
-                    rows = csv.DictReader(f, delimiter=';')
-                    for row in rows:
-                        list.append(row)
-                for l in list:
-                    r = requests.put(host + '/categories', data = {'name':l['name']})
-                    print(r.text)
-        elif args.path == 'part':
-            if args.name != None and args.categoryId != None and args.description != None:
-                r = requests.put(host + '/parts', data = {'name':args.name, 'categoryId': args.categoryId, 'description': args.description})
-            elif args.csv != None:
-                list = []
-                with open(args.csv,'r') as f:
-                    rows = csv.DictReader(f, delimiter=';')
-                    for row in rows:
-                        list.append(row)
-                for l in list:
-                    r = requests.put(host + '/parts', data = {'name':l['name'], 'categoryId': l['categoryId'], 'description': l['description'], 'amount': l['amount']})
-                    print(r.text)
+        data = {}
+        #fill data dict
+        for i, val in enumerate(self.headers):
+            #only add if checked
+            self.log(str(self.iTable.item(0,i).checkState()))
+            if self.iTable.item(0, i).checkState() == QtCore.Qt.Checked:
+                data[val] = self.iTable.item(0, i).text()
+        #print data dict, but with newlines
+        self.log(str(data).replace(',',',\n').replace('{','{\n').replace('}','\n}'))
+        #put request
+        r = self.request(url, data)
+        if r != 0:
+            self.log(SEPERATOR)
+            self.log("return message:", bold)
+            self.log(r.text)
 
 if __name__ == '__main__':
     ex = apiGui()
-    #ex.fillTable(.oTable, host)
-    ex.show() 
+    #ex.fillOutputTable(.oTable, host)
+    ex.show()
