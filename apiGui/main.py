@@ -1,5 +1,5 @@
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit, QMenuBar, QAction
 import requests
 
 DEBUG = False
@@ -62,10 +62,23 @@ class apiGui:
             self.log("OOps: Something Else"+str(err))
         return data
 
+    def trigger(self, action):
+        self.log(action.text())
+
     #gui functions
     def show(self):
         self.mainWindow.setWindowTitle("MAIN")
 
+        #menu actions
+        actionCsv = QAction("import csv", self.mainWindow)
+        actionUrl = QAction("saved urls", self.mainWindow)
+        actionQuit = QAction("quit", self.mainWindow)
+        #create menu
+        menuFile = self.mainWindow.menuBar().addMenu("FILE")
+        menuFile.addAction(actionCsv)
+        menuFile.addAction(actionUrl)
+        menuFile.addAction(actionQuit)
+        menuFile.triggered[QAction].connect(self.trigger)
         #generate layout of the tabs
         self.showOutput()
         self.showInput()
