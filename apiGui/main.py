@@ -1,3 +1,4 @@
+import sys
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit, QMenuBar, QAction
 import requests
@@ -8,29 +9,62 @@ SEPERATOR = '##########################################'
 
 #text styles
 bold = 1
-class apiGui:
-    app = QApplication([])
-    mainWindow = QMainWindow()
-    centralWidget = QWidget()
-    tabWidget = QTabWidget()
-    debug = QTextEdit()
-    debug.setReadOnly(True)
-    url = QLineEdit(host)
-    headers = []
-    #output
-    oWindow = QWidget()
-    oTable = QTableWidget(0, 0)
-    #output table is readonly
-    oTable.setEditTriggers(QTableWidget.NoEditTriggers)
-    #no row labels
-    oTable.verticalHeader().setVisible(False)
-    oLayout = QVBoxLayout()
-    #input
-    iWindow = QWidget()
-    iLayout = QVBoxLayout()
-    iTable = QTableWidget(0, 0)
-    #no row labels
-    iTable.verticalHeader().setVisible(False)
+class apiGui(QMainWindow):
+    def __init__(self, parent = None):
+        super(apiGui, self).__init__(parent)
+        self.setWindowTitle("apiGui by LJ")
+        #vars
+        self.centralWidget = QWidget()
+        self.tabWidget = QTabWidget()
+        self.debug = QTextEdit()
+        self.debug.setReadOnly(True)
+        self.url = QLineEdit(host)
+        self.headers = []
+        #output
+        self.oWindow = QWidget()
+        self.oTable = QTableWidget(0, 0)
+        #output table is readonly
+        self.oTable.setEditTriggers(QTableWidget.NoEditTriggers)
+        #no row labels
+        self.oTable.verticalHeader().setVisible(False)
+        self.oLayout = QVBoxLayout()
+        #input
+        self.iWindow = QWidget()
+        self.iLayout = QVBoxLayout()
+        self.iTable = QTableWidget(0, 0)
+        #no row labels
+        self.iTable.verticalHeader().setVisible(False)
+        
+        #menu actions
+        actionCsv = QAction("import csv", self)
+        actionUrl = QAction("saved urls", self)
+        actionQuit = QAction("quit", self)
+        #create menu
+        menuFile = self.menuBar().addMenu("FILE")
+        menuFile.addAction(actionCsv)
+        menuFile.addAction(actionUrl)
+        menuFile.addAction(actionQuit)
+        menuFile.triggered[QAction].connect(self.trigger)
+        #generate layout of the tabs
+        self.showOutput()
+        self.showInput()
+        #central
+        hlayout = QHBoxLayout()
+        hlayout.addWidget(QLabel("URL"))
+        hlayout.addWidget(self.url)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addLayout(hlayout)
+        mainLayout.addWidget(self.tabWidget)
+        mainLayout.addWidget(self.debug)
+        self.centralWidget.setLayout(mainLayout)
+        self.setCentralWidget(self.centralWidget)
+        #add tabs
+        self.tabWidget.addTab(self.oWindow, "main")
+        self.tabWidget.addTab(self.iWindow, "add")
+        self.tabWidget.currentChanged.connect(lambda:self.reload(self.url.text()))
+
+        self.reload(self.url.text())
 
     #utility functions
     def log(self, text, option = 0):
@@ -61,47 +95,11 @@ class apiGui:
         except requests.exceptions.RequestException as err:
             self.log("OOps: Something Else"+str(err))
         return data
-
+    
     def trigger(self, action):
         self.log(action.text())
 
     #gui functions
-    def show(self):
-        self.mainWindow.setWindowTitle("MAIN")
-
-        #menu actions
-        actionCsv = QAction("import csv", self.mainWindow)
-        actionUrl = QAction("saved urls", self.mainWindow)
-        actionQuit = QAction("quit", self.mainWindow)
-        #create menu
-        menuFile = self.mainWindow.menuBar().addMenu("FILE")
-        menuFile.addAction(actionCsv)
-        menuFile.addAction(actionUrl)
-        menuFile.addAction(actionQuit)
-        menuFile.triggered[QAction].connect(self.trigger)
-        #generate layout of the tabs
-        self.showOutput()
-        self.showInput()
-        #central
-        hlayout = QHBoxLayout()
-        hlayout.addWidget(QLabel("URL"))
-        hlayout.addWidget(self.url)
-
-        mainLayout = QVBoxLayout()
-        mainLayout.addLayout(hlayout)
-        mainLayout.addWidget(self.tabWidget)
-        mainLayout.addWidget(self.debug)
-        self.centralWidget.setLayout(mainLayout)
-        self.mainWindow.setCentralWidget(self.centralWidget)
-        #add tabs
-        self.tabWidget.addTab(self.oWindow, "main")
-        self.tabWidget.addTab(self.iWindow, "add")
-        self.tabWidget.currentChanged.connect(lambda:self.reload(self.url.text()))
-
-        self.mainWindow.show()
-        self.reload(self.url.text())
-        self.app.exec_()
-
     def showOutput(self):
         #add Widgets to layout
         btnReload = QPushButton('load')
@@ -200,6 +198,7 @@ class apiGui:
             self.log(r.text)
 
 if __name__ == '__main__':
+    app = QApplication(sys.argv)
     ex = apiGui()
-    #ex.fillOutputTable(.oTable, host)
     ex.show()
+    sys.exit(app.exec_())
