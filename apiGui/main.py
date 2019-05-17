@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit, QMenuBar, QAction
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QTabWidget, QLineEdit, QLabel, QHeaderView, QTextEdit, QMenuBar, QAction, QRadioButton
 import requests
 
 DEBUG = False
@@ -54,9 +54,14 @@ class apiGui(QMainWindow):
         hlayout = QHBoxLayout()
         hlayout.addWidget(QLabel("URL"))
         hlayout.addWidget(self.url)
+        #horizontal layout for the api type
+        typelayout = QHBoxLayout()
+        typelayout.addWidget(QRadioButton("REST"))
+        typelayout.addWidget(QRadioButton("SOAP"))
         #vertical main layout
         mainLayout = QVBoxLayout()
         mainLayout.addLayout(hlayout)
+        mainLayout.addLayout(typelayout)
         mainLayout.addWidget(tabWidget)
         mainLayout.addWidget(self.debug)
         centralWidget.setLayout(mainLayout)
