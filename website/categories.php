@@ -21,14 +21,13 @@ function printInputs() {
         </form>';
     return $output;
 }
-$json = file_get_contents('http://pm-api/categories');
+$json = file_get_contents('http://pm-api:3000/categories');
 $obj = json_decode($json);
 
 
-$categories = $obj->categories;
 echo '<table class="json-table" width="100%">';
-echo jsonToTableHeader($categories);
-echo jsonToTable($categories, $categories, 1);
+echo jsonToTableHeader($obj);
+echo jsonToTable($obj, $obj, 1);
 echo printInputs();
 echo '</table>'
 ?>

@@ -3,13 +3,13 @@ include('func.php');
 $referer = strtok($_SERVER['HTTP_REFERER'], '?');
 echo $referer;
 if(endsWith($referer,"/categories.php") == true){
-    $service_url = 'http://pm-api/categories';
+    $service_url = 'http://pm-api:3000/categories';
     $curl_post_data = array(
         'id' => $_POST['id']
     );
     echo $_POST['id'];
 }else{
-    $service_url = 'http://pm-api/parts';
+    $service_url = 'http://pm-api:3000/parts';
     $curl_post_data = array(
         'id' => $_POST['id']
     );

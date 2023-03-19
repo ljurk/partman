@@ -9,7 +9,7 @@ printNav();
 <ul>
 
 <?php
-$url = 'http://pm-api/parts';
+$url = 'http://pm-api:3000/parts';
 $user = 'user';
 $pw = 'password';
 function printInputs($categories) {
@@ -45,15 +45,14 @@ $context = stream_context_create(array (
 ));
 //$json = file_get_contents($url,false,$context);
 $json = file_get_contents($url);
-$obj = json_decode($json);
-$json = file_get_contents('http://pm-api/categories');
+$parts= json_decode($json);
+$json = file_get_contents('http://pm-api:3000/categories');
 $categories = json_decode($json);
 
-$parts = $obj->parts;
 echo '<table class="json-table" width="100%">';
 echo jsonToTableHeader($parts);
-echo jsonToTable($parts, $categories->categories, 0);
-echo printInputs($categories->categories);
+echo jsonToTable($parts, $categories, 0);
+echo printInputs($categories);
 echo '</table>'
 ?>
 

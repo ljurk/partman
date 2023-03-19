@@ -1,6 +1,3 @@
-# Product Service
-
-# Import framework
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse
 import psycopg2
@@ -25,7 +22,7 @@ parser.add_argument('description')
 parser.add_argument('amount', type=int )
 
 #db
-con = psycopg2.connect( "dbname='partman' user='partman' host='pm-db' password='docker'")
+con = psycopg2.connect( "dbname='partman' user='partman' host='localhost' password='docker'")
 cur = con.cursor()
 output =""
 
@@ -45,5 +42,4 @@ api.add_resource(Categories, '/categories')
 
 # Run the application
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
-
+    app.run(host='0.0.0.0', port=6000, debug=True)

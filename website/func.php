@@ -33,9 +33,6 @@ function printNav() {
         <a href="'.$GLOBALS["subfolder"].'/api">api</a>
         </li>
         <li>';
-    if($_GET['status'] == 'success') {
-        printSuccess();
-    }
     echo '</li>
         </ul>
         </nav>';
@@ -64,7 +61,7 @@ function jsonToTableHeader ($data) {
 
 function jsonToSelect ($data) {
 
-    $outputSelect .= '<select name="categoryId" id="categoryId" size="1">';
+    $outputSelect = '<select name="categoryId" id="categoryId" size="1">';
     foreach ($data as $key => $value) {
         if (is_object($value) || is_array($value)) {
             //$outputSelect .= jsonToSelect($value);
@@ -77,7 +74,7 @@ function jsonToSelect ($data) {
 }
 
 function jsonToTable ($data, $categories, $type) {
-    $table .= '<tr>';
+    $table = '<tr>';
     $actualId = 0;
     foreach ($data as $key => $value) {
         if (is_object($value) || is_array($value)) {
